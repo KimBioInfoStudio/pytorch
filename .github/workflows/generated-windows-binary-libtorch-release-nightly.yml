@@ -834,9 +834,10 @@ jobs:
           echo "instance-type: $(get_ec2_metadata instance-type)"
           echo "system info $(uname -a)"
       - name: "[FB EMPLOYEES] Enable SSH (Click me for login details)"
-        uses: seemethere/add-github-ssh-key@v1
+        uses: pytorch/test-infra/.github/actions/setup-ssh@main
+        continue-on-error: true
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github-secret: ${{ secrets.GITHUB_TOKEN }}
       # Needed for binary builds, see: https://github.com/pytorch/pytorch/issues/73339#issuecomment-1058981560
       - name: Enable long paths on Windows
         shell: powershell
@@ -952,9 +953,10 @@ jobs:
           echo "instance-type: $(get_ec2_metadata instance-type)"
           echo "system info $(uname -a)"
       - name: "[FB EMPLOYEES] Enable SSH (Click me for login details)"
-        uses: seemethere/add-github-ssh-key@v1
+        uses: pytorch/test-infra/.github/actions/setup-ssh@main
+        continue-on-error: true
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github-secret: ${{ secrets.GITHUB_TOKEN }}
       # Needed for binary builds, see: https://github.com/pytorch/pytorch/issues/73339#issuecomment-1058981560
       - name: Enable long paths on Windows
         shell: powershell
@@ -996,12 +998,12 @@ jobs:
           # Remove any artifacts from the previous checkouts
           git clean -fxd
         working-directory: pytorch
-      - name: Checkout mantaionut/builder
+      - name: Checkout pytorch/builder
         uses: malfet/checkout@silent-checkout
         with:
-          ref: windows_static_lib_test
+          ref: main
           submodules: recursive
-          repository: mantaionut/builder
+          repository: pytorch/builder
           path: builder
           quiet-checkout: true
       - name: Clean pytorch/builder checkout
@@ -1050,7 +1052,8 @@ jobs:
       build_name: libtorch-cuda12_1-static-build-deps-release
     secrets:
       github-token: ${{ secrets.GITHUB_TOKEN }}
-      aws-access-key-id: ${{ secrets.AWS_PYTORCH_UPLOADER_ACCESS_KEY_ID }}
+      aws-pytorch-uploader-access-key-id: ${{ secrets.AWS_PYTORCH_UPLOADER_ACCESS_KEY_ID }}
       aws-pytorch-uploader-secret-access-key: ${{ secrets.AWS_PYTORCH_UPLOADER_SECRET_ACCESS_KEY }}
       conda-pytorchbot-token: ${{ secrets.CONDA_PYTORCHBOT_TOKEN }}
+      conda-pytorchbot-token-test: ${{ secrets.CONDA_PYTORCHBOT_TOKEN_TEST }}
     uses: ./.github/workflows/_binary-upload.yml
