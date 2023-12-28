@@ -437,7 +437,7 @@ def generic_jump(truth_fn: typing.Callable[[object], bool], push: bool):
             raise exc.UserError(
                 exc.UserErrorType.DYNAMIC_CONTROL_FLOW,
                 "Dynamic control flow is not supported at the moment. Please use "
-                "functorch.experimental.control_flow.cond to explicitly capture the control flow.",
+                "functorch.experimental.control_flow.cond to explicitly capture the control flow",
                 case_name="cond_operands",
             )
 
@@ -1355,7 +1355,7 @@ class InstructionTranslatorBase(Checkpointable[InstructionTranslatorGraphState])
         if config.inject_BUILD_SET_unimplemented_TESTING_ONLY:
             unimplemented("missing: BUILD_SET")
         items = self.popn(inst.argval)
-        new_set = SetVariable(items, mutable_local=MutableLocal())
+        new_set = SetVariable(self, items, mutable_local=MutableLocal())
         self.push(new_set)
 
     def BUILD_LIST_UNPACK(self, inst, cls=ListVariable):
@@ -1383,7 +1383,7 @@ class InstructionTranslatorBase(Checkpointable[InstructionTranslatorGraphState])
                 or k.is_python_constant()
             )
 
-            result[ConstDictVariable.get_key(k)] = v
+            result[ConstDictVariable.get_key(self, k)] = v
         assert len(result) == len(items) / 2
         self.push(ConstDictVariable(result, dict, mutable_local=MutableLocal()))
 
