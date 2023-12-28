@@ -70,10 +70,10 @@ else()
     ${pytorch_android_DIR}/pytorch_jni_common.h
   )
 endif()
-if(BUILD_SHARED_LIBS)
-  add_library(${PYTORCH_JNI_TARGET} SHARED ${pytorch_android_SOURCES})
-else()
+if(NOT BUILD_SHARED_LIBS and MSVC)
   add_library(${PYTORCH_JNI_TARGET} STATIC ${pytorch_android_SOURCES})
+else()
+  add_library(${PYTORCH_JNI_TARGET} SHARED ${pytorch_android_SOURCES})
 endif()
 
 if(APPLE)
